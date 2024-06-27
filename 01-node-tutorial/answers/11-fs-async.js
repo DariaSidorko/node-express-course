@@ -11,10 +11,10 @@ const lines = [
 
 function writeLinesToFile(filename, lines, index) {
   if (index < lines.length) {
-    fs.writeFile(filename, lines[index], (err) => {
+    fs.appendFile(filename, lines[index], (err) => {
       if (err) throw err;
       console.log(`Line ${index + 1} was written to ${filename}`);
-      
+
       // Call recursively to write the next line
       writeLinesToFile(filename, lines, index + 1);
     });

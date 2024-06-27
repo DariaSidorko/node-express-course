@@ -1,9 +1,10 @@
 
 
 
+// process.env.MY_VAR = 'my_value'
+
 console.log(__dirname)
 console.log(__filename)
 console.log(exports)
-// setInterval(() => {
-//   console.log("Hi there!")
-// }, 1000)
+
+console.log(process.env.MY_VAR)
