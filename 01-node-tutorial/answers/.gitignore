@@ -1,2 +1,5 @@
 /node_modules  
 .DS_Store  
+temp.text
+fileA.txt
+fileB.txt
