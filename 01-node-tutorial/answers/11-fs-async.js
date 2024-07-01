@@ -11,13 +11,21 @@ const lines = [
 
 function writeLinesToFile(filename, lines, index) {
   if (index < lines.length) {
-    fs.appendFile(filename, lines[index], (err) => {
-      if (err) throw err;
-      console.log(`Line ${index + 1} was written to ${filename}`);
+    if(index === 0){
+        fs.writeFile(filename, lines[index], (err) => {
+        if (err) throw err;
+        console.log(`Line ${index + 1} was written to ${filename}`);
+        });
+    } else {
+        fs.appendFile(filename, lines[index], (err) => {
+        if (err) throw err;
+        console.log(`Line ${index + 1} was written to ${filename}`);
+        });
+    }
 
-      // Call recursively to write the next line
-      writeLinesToFile(filename, lines, index + 1);
-    });
+    // Call recursively to write the next line
+    writeLinesToFile(filename, lines, index + 1);
+    
   } else {
     console.log(`All lines were written to ${filename} successfully`);
   }
