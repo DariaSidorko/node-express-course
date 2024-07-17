@@ -1,73 +1,59 @@
 
 
 const express = require('express');
+const data = require('./data');
+const peopleRouter = require('./routes/people');
+const cookieParser = require('cookie-parser');
+
+// Initialize express app
 const app = express();
 
-// Middleware to serve static files from the 'public' directory
-app.use(express.static("./public"));
-
 // Middleware to parse JSON bodies
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-const { products } = require("./data");
+// Middleware to parse cookies
+app.use(cookieParser());
 
+// Use peopleRouter for /api/v1/people
+app.use('/api/v1/people', peopleRouter);
 
-// API endpoint that returns JSON
-app.get('/api/v1/test', (req, res) => {
-    res.json({ message: "It worked!" });
-  });
+// Middleware to serve static files from the 'public' directory
+// app.use(express.static("./public"));
 
-// API endpoint that returns products JSON
-app.get('/api/v1/products', (req, res) => {
-    res.json(products);
-  });
-
-// API endpoint that returns product JSON by ID
-app.get('/api/v1/products/:productID', (req, res) => {
-    const idToFind = parseInt(req.params.productID); 
-    const product = products.find((p) => p.id === idToFind);
-    if (product)
-    res.json(product);
-    else
-    res.json({ message: "Product Not Found!" });
-  });
-
-// API endpoint that returns products JSON with Query
-app.get('/api/v1/query', (req, res) => {
-    const { search, limit, maxPrice } = req.query;
-
-     // Filter products based on search query
-     let result = products;
-     if (search) {
-         result = result.filter(product =>
-             product.name.toLowerCase().startsWith(search.toLowerCase())
-         );
-     }
-
-    // Limit the number of results to "limit"
-    let limitNum = Number(limit);
-    if (limit && !isNaN(limitNum)) {
-        result  = result .slice(0, limitNum);
+// Authentication middleware
+const auth = (req, res, next) => {
+    if (req.cookies.name) {
+        req.user = req.cookies.name; // Set user information from cookie
+        next();
+    } else {
+        res.status(401).json({ message: "Unauthorized" });
     }
+};
 
-    // Filter products by maximum price
-    if (maxPrice) {
-        const maxPriceNumber = parseFloat(maxPrice);
-        if (!isNaN(maxPriceNumber)) {
-            result = result.filter(product =>
-                product.price <= maxPriceNumber
-            );
-        }
+// POST /logon
+app.post('/logon', (req, res) => {
+    const { name } = req.body;
+
+    if (name) {
+        res.cookie('name', name); // Set cookie with name
+        res.status(201).json({ message: `Hello ${name}` });
+    } else {
+        res.status(400).json({ message: "Please provide a name" });
     }
-
-    res.json(result);
 });
-  
 
-  // Middleware for handling 404 errors
-app.use((req, res, next) => {
-    res.status(404).send("Not Found");
-  });
+// DELETE /logoff
+app.delete('/logoff', (req, res) => {
+    res.clearCookie('name');
+    res.status(200).json({ message: "User logged off" });
+});
+
+// GET /test
+app.get('/test', auth, (req, res) => {
+    res.status(200).json({ message: `Welcome ${req.user}` });
+});
+
   
   // Set the port to 3000 and start listening for connections
 const PORT = 3000;
