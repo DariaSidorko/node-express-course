@@ -1,0 +1,18 @@
+
+
+1.
+
+Centralized Error Handling: The asyncWrapper function allows you to handle errors in a 
+centralized manner rather than having to write try-catch blocks in every route handler. 
+Simplifies Asynchronous Code: Using asyncWrapper, you can automatically handle errors and 
+pass them to the Express error-handling middleware.
+Cleaner Route Handlers: By wrapping your route handlers with asyncWrapper, you avoid cluttering 
+your route logic with repetitive try-catch blocks. 
+
+
+2.
+
+if (!task) {  
+    // Throw a custom error
+    return next(new createCustomError(`No task found with id: ${taskID}`, 404));
+  }  
