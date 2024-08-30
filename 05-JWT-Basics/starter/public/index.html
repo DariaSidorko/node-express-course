@@ -1,40 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JWT Basics</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <main>
-      <form class="form contact-form">
-        <h5>login/register</h5>
-        <div class="form-row">
-          <label for="username" class="form-label">username</label>
-          <input type="text" class="form-input username-input" />
-        </div>
-        <div class="form-row">
-          <label for="password" class="form-label">password</label>
-          <input type="password" class="form-input password-input" />
-        </div>
-        <div class="text-small form-alert">there was an error</div>
-        <button type="submit" class="btn btn-block">submit</button>
-      </form>
-      <div class="container">
-        <h4>Dashboard</h4>
-        <p class="token">no token present</p>
-        <div class="result"></div>
-        <button class="btn btn-block" id="data">get data</button>
-      </div>
-    </main>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
-      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="./browser-app.js"></script>
-  </body>
+<html>
+<head>
+  <title>JWT Authentication</title>
+</head>
+<body>
+  <h1>Login</h1>
+  <form id="login-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Log In</button>
+  </form>
+  <h2>Message</h2>
+  <div id="message"></div>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const password = document.getElementById('password').value;
+
+      // Log in and get token
+      const response = await fetch('/api/v1/logon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, password })
+      });
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+
+      // Get hello message
+      const token = localStorage.getItem('token');
+      const messageResponse = await fetch('/api/v1/hello', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const messageData = await messageResponse.json();
+      document.getElementById('message').innerText = messageData.message;
+    });
+  </script>
+</body>
 </html>
