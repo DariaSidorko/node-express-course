@@ -1,15 +1,24 @@
+
 require('dotenv').config();
 require('express-async-errors');
 
 const express = require('express');
 const app = express();
 
+const authRoutes = require('./routes/main');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
+const authMiddleware = require('./middleware/auth');
 
 // middleware
 app.use(express.static('./public'));
 app.use(express.json());
+
+app.use('/api/v1', authRoutes);
+
+app.get('/api/v1/hello', authMiddleware, (req, res) => {
+  res.status(200).json({ message: `Hello, ${req.user.name}!` });
+});
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
@@ -27,3 +36,4 @@ const start = async () => {
 };
 
 start();
+
