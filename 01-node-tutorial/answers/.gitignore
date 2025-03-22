@@ -1,0 +1,6 @@
+fileA.txt
+fileB.txt
+
+/node_modules  
+.DS_Store  
+temp.txt
