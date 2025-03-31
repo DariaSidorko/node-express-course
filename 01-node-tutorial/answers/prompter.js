@@ -20,45 +20,44 @@ const getBody = (req, callback) => {
   });
 };
 
-// here, you could declare one or more variables to store what comes back from the form.
-let item = "Enter something below.";
 
-// here, you can change the form below to modify the input fields and what is displayed.
-// This is just ordinary html with string interpolation.
-const form = () => {
-  return `
+let targetNumber = Math.floor(Math.random() * 100) + 1;
+let message = "Guess a number between 1 and 100:";
+
+const form = () => `
   <body>
-  <p>${item}</p>
-  <form method="POST">
-  <input name="item"></input>
-  <button type="submit">Submit</button>
-  </form>
+    <p>${message}</p>
+    <form method="POST">
+      <input type="number" name="guess" />
+      <button type="submit">Submit</button>
+    </form>
   </body>
-  `;
-};
+`;
 
 const server = http.createServer((req, res) => {
-  console.log("req.method is ", req.method);
-  console.log("req.url is ", req.url);
   if (req.method === "POST") {
     getBody(req, (body) => {
-      console.log("The body of the post is ", body);
-      // here, you can add your own logic
-      if (body["item"]) {
-        item = body["item"];
+      const guess = Number(body["guess"]);
+      if (!isNaN(guess)) {
+        if (guess < targetNumber) {
+          message = `${guess} is too low! Try again.`;
+        } else if (guess > targetNumber) {
+          message = `${guess} is too high! Try again.`;
+        } else {
+          message = `Congratulations! ${guess} is correct! A new game has started.`;
+          targetNumber = Math.floor(Math.random() * 100) + 1;
+        }
       } else {
-        item = "Nothing was entered.";
+        message = "Please enter a valid number.";
       }
-      // Your code changes would end here
-      res.writeHead(303, {
-        Location: "/",
-      });
+      res.writeHead(303, { Location: "/" });
       res.end();
     });
   } else {
+    res.writeHead(200, { "Content-Type": "text/html" });
     res.end(form());
   }
 });
 
 server.listen(3000);
-console.log("The server is listening on port 3000.");
+console.log("Server is listening on port 3000");
