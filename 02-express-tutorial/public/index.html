@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Product List</h1>
+    <button id="fetchProducts">Load Products</button>
+    <div id="productList"></div>
+
+    <script>
+        document.getElementById("fetchProducts").addEventListener("click", () => {
+            fetch("http://localhost:3000/api/v1/products")
+                .then(response => response.json())
+                .then(data => {
+                    const productDiv = document.getElementById("productList");
+                    productDiv.innerHTML = "<ul>" + data.map(product =>
+                        `<li>${product.name} - $${product.price}</li>`
+                    ).join("") + "</ul>";
+                })
+                .catch(error => console.error("Error fetching products:", error));
+        });
+    </script>
+</body>
+</html>
