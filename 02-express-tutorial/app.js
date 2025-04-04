@@ -2,11 +2,12 @@ console.log('Express Tutorial')
 
 const express = require('express');
 
+const { products } = require("./data");
+
 const app = express();
 
 app.use(express.static("public"));
 
-const { products } = require("./data");
 
 // GET:  '/'
 app.get('/', (req, res) => {
