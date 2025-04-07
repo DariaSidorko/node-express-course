@@ -19,7 +19,7 @@ app.get("/api/v1/products", (req, res) => {
     res.json(products);
 });
 
-// GET: "/api/v1/products/:productID"
+// GET: "/api/v1/products/:productID"add.
 app.get("/api/v1/products/:productID", (req, res) => {
     const idToFind = parseInt(req.params.productID);
 
