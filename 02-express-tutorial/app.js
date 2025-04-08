@@ -15,12 +15,9 @@ const peopleRouter = require('./routes/people');
 app.use('/api/v1/people', peopleRouter);
 
 
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
-
-// console.log("req.body")
 
 const auth = (req, res, next) => {
     const user = req.cookies.name;
@@ -31,8 +28,6 @@ const auth = (req, res, next) => {
       res.status(401).json({ success: false, message: 'unauthorized' });
     }
   };
-
-//   console.log("req.body")
 
   app.post('/logon', (req, res) => {
     console.log("Logon", req)
@@ -45,7 +40,6 @@ const auth = (req, res, next) => {
     res.cookie('name', name);
     res.status(201).json({ success: true, message: `Hello, ${name}` });
   });
-
 
 
   app.delete('/logoff', (req, res) => {
