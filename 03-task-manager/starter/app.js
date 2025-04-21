@@ -1,5 +1,3 @@
-
-
 const connectDB = require('./db/connect');
 require('dotenv').config();
 const express = require('express');
